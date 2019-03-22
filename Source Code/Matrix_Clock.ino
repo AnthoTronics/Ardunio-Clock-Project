@@ -219,5 +219,5 @@ void loop(void)
     P.displayReset(0);  
   }
 
-} //END
+} //END of code
 

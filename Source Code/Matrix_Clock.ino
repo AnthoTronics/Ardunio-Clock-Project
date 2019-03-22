@@ -1,10 +1,12 @@
 /*Arduino Clock by AnthoTRONICS
-* Last edit: December 21,2018
+* Last edit: March 22,2019
 */
-// Libraries you'll need (Same as the ones in the guide):
-// MD Parola: https://github.com/MajicDesigns/MD_Parola // click the link to download the library
-// MD_MAX72XX: https://github.com/MajicDesigns/MD_MAX72XX //click the link to download the library
-// DS3231: https://github.com/adafruit/RTClib
+// Libraries you'll need (Same as the ones in the guide:
+// TAKE NOTE OF THE VERSIONS!!!
+
+// MD Parola 3.0.1: https://github.com/MajicDesigns/MD_Parola // click the link to download the library
+// MD_MAX72XX 3.0.2: https://github.com/MajicDesigns/MD_MAX72XX //click the link to download the library
+// DS3231 1.0.2: https://github.com/NorthernWidget/DS3231 // click the link to download
 
 /*CODE:*/
 // Header file includes
@@ -41,7 +43,6 @@ MD_Parola P = MD_Parola(HARDWARE_TYPE,CS_PIN, MAX_DEVICES);
 
 #define MAX_MESG  20
 
-
 // Global variables
 char szTime[9];    // mm:ss\0
 char szMesg[MAX_MESG+1] = "";
@@ -68,7 +69,7 @@ char *mon2str(uint8_t mon, char *psz, uint8_t len)
 
 char *dow2str(uint8_t code, char *psz, uint8_t len)
 {
-  static const __FlashStringHelper*	str[] =
+  static const __FlashStringHelper*  str[] =
   {
   F("Sunday"), F("Monday"), F("Tuesday"),
   F("Wednesday"), F("Thursday"), F("Friday"),
@@ -85,19 +86,19 @@ void getTime(char *psz, bool f = true)
 {
   s = Clock.getSecond();
   m = Clock.getMinute();
-  //h =Clock.getHour(h12,PM);//24HR Format
+  h =Clock.getHour(h12,PM); //24hr Format
   sprintf(psz, "%02d%c%02d", h, (f ? ':' : ' '), m);
   //12hr Format
   //uncomment if you want the clock to be in 12hr Format
-  if (Clock.getHour(h12,PM)>=13 || Clock.getHour(h12,PM)==0)
+  /*if (Clock.getHour(h12,PM)>=13 || Clock.getHour(h12,PM)==0)
   {
     h = Clock.getHour(h12,PM) - 12;
   }
   else
   {
     h = Clock.getHour(h12,PM);
-  }
-
+  }*/
+ 
 }
 
 void getDate(char *psz)
@@ -145,7 +146,8 @@ void loop(void)
     {
       case 0:    // Temperature deg C
       P.setPause(0,1000);
-      P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_UP);
+      //P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_UP);
+      P.setTextEffect(0, PA_MESH, PA_BLINDS);
       display++;    
       dtostrf(Clock.getTemperature(), 3, 1, szMesg);
       strcat(szMesg, "$");
@@ -155,7 +157,8 @@ void loop(void)
         break;
 
       case 1: // Temperature deg F
-        P.setTextEffect(0, PA_SCROLL_UP, PA_SCROLL_LEFT);
+        //P.setTextEffect(0, PA_SCROLL_UP, PA_SCROLL_LEFT);
+        P.setTextEffect(0, PA_OPENING, PA_GROW_DOWN);
         display++;
         dtostrf((1.8 *Clock.getTemperature() )+32, 3, 1, szMesg);
         strcat(szMesg, "&");
@@ -189,8 +192,9 @@ void loop(void)
     }
     if(s==00&& s<=30){
     display++;
-    P.setTextEffect(0, PA_PRINT, PA_WIPE_CURSOR);
+    P.setTextEffect(0, PA_PRINT, PA_SCROLL_UP);
     }
+
     //  strcpy(szMesg, "36 % RH");               
     
         break;
@@ -212,11 +216,8 @@ void loop(void)
         break;
     }
 
-    P.displayReset(0); //rest zone zero
-    
-  
+    P.displayReset(0);  
   }
 
-}///////end of loop
-
+} //END
 
